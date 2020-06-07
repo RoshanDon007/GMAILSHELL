@@ -36,6 +36,7 @@ logo=`figlet Retrosploit -f chunky.flf | lolcat`
 
 #=========== END MODULES ============#
 
+clear && sleep 0.8
 figlet GBrute
 
 echo -e ":: Description ::\n"
