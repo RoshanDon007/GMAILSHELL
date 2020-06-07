@@ -21,15 +21,6 @@ blinkre="${def}25m"
 rehide="${def}28m"
 pc="${yellow}[${red}PC Only${yellow}]${green}"
 
-#===================#
-#  ROOT PRIVILEGIES #
-#===================#
-
-if [[ $EUID -ne 0 ]]; then
-        echo -e "$red You don't have Root privilegies, execute the script as root.$nc"
-        exit 1
-fi
-
 #=============================#
 #   Get gateway and local ip  #
 #=============================#
@@ -45,7 +36,7 @@ logo=`figlet Retrosploit -f chunky.flf | lolcat`
 
 #=========== END MODULES ============#
 
-figlet GBrute | lolcat
+figlet GBrute
 
 echo -e ":: Description ::\n"
 echo -e "This tool can brute force gmail account.\n"
