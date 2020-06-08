@@ -33,7 +33,7 @@ server="smtp.gmail.com smtp"
 
 clear
 
-figlet Dark Hydra | lolcat
+figlet GBrute | lolcat
 
 echo -e $cyan":: ${red}Description ${cyan}::\n"
 
